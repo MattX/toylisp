@@ -77,34 +77,39 @@ class Function(Value):
 		raise NotImplementedError
 
 class Lambda(Function):
-	def __init__(self, env, args, body):
+	def __init__(self, env, args, body, varargs = False):
 		self.env = env
 		self.args = args
 		self.body = body
+		self.macro = False
+		self.varargs = varargs
 	def __str__(self):
-		return "lambda function : " + str(list(map(str, self.args))) + " -> " + str(self.body) + " in " + str(self.env)
+		return ("varargs " if self.varargs else "") + ("macro " if self.macro else "") + "lambda function : " + str(list(map(str, self.args))) + " -> " + str(self.body) + " in " + str(self.env)
 	def evaluate(self, env):
 		return self
 	def apply(self, values):
 		e = env.Env(self.env)
-		if len(self.args) != len(values):
-			raise RuntimeError("Parity incorrect")
-		for i in range(0, len(self.args)):
-			e.addValue(self.args[i].value, values[i])
-		print("Pushed values to", e)
+		if not self.varargs:
+			if len(self.args) != len(values):
+				raise RuntimeError("Parity incorrect")
+			for i in range(0, len(self.args)):
+				e.addValue(self.args[i].value, values[i])
+		else:
+			e.addValue(self.args[0].value, misc.listToPairs(values))
 		return self.body.evaluate(e)
 
 
 class Primitive(Function):
 	def __init__(self, env, prim):
 		self.env = env
-		self.primitive=prim
+		self.primitive = prim
+		self.macro = False
 	def __str__(self):
-		return "primitive function : " + str(self.primitive)
+		return ("macro " if self.macro else "") + "primitive function : " + str(self.primitive)
 	def evaluate(self, env):
 		return self
-	def apply(self, args):
-		return self.primitive(args)
+	def apply(self, values):
+		return self.primitive(values)
 
 
 def tests():

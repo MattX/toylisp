@@ -54,6 +54,8 @@ associate("apply", prim.applyP)
 associate("load", loadP)
 associate("print", prim.printP)
 associate("input", prim.inputP)
+associate("macro", prim.macroP)
+associate("gensym", prim.gensymP)
 mainEnv.addValue("nil", objects.Nil())
 
 def repl():

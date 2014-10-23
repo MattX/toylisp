@@ -2,14 +2,17 @@ import objects
 import env
 import misc
 
+def unquote(expr, env):
+	return expr
+
 def funcall(fun, args, env):
-	print("------------")
-	print(fun, args, env)
-	env.showEnv()
+#	print("------------")
+#	print(fun, args, env)
+#	env.showEnv()
 	if type(fun) is objects.Symbol:
 		# formes speciales
 		if fun.value == "quote":
-			return args.car()
+			return unquote(args.car(), env)
 		elif fun.value == "if":
 			res = args.car().evaluate(env)
 			if not type(res) is objects.Bool:
@@ -25,7 +28,6 @@ def funcall(fun, args, env):
 			ops = misc.pairsToList(args)
 			for i in range(0, len(ops) - 1):
 				ops[i].evaluate(env)
-			print(ops[-1])
 			return ops[-1].evaluate(env)
 		elif fun.value == "set!" or fun.value == "define":
 			if type(args.cdr()) is objects.Nil():
@@ -38,8 +40,16 @@ def funcall(fun, args, env):
 			else:
 				env.addValue(args.car().value, newVal)
 			return newVal
-		elif fun.value == "lambda":
-			return objects.Lambda(env, misc.pairsToList(args.car()), objects.Pair(objects.Symbol("begin"), args.cdr()))
+		elif fun.value == "lambda": # varargs function : (lambda (&list x) ... )
+			if type(args.car()) is objects.Pair and type(args.car().car()) is objects.Symbol and args.car().car().value == "&list":
+				return objects.Lambda(env, [args.car().cdr().car()], objects.Pair(objects.Symbol("begin"), args.cdr()), True)
+			else:
+				return objects.Lambda(env, misc.pairsToList(args.car()), objects.Pair(objects.Symbol("begin"), args.cdr()))
+		
+		#macro
+		elif env.getValue(fun.value).macro:
+			largs = misc.pairsToList(args)
+			return fun.evaluate(env).apply(largs).evaluate(env)
 
 
 	#fonction normale
