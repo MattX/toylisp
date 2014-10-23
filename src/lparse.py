@@ -1,15 +1,17 @@
 import objects
 
+class ParseError(Exception): pass
+
 def parse_list(tokens): # assuming the initial '(' and possibly some elements have been parsed
                         # returns a pair : scanned object and rest of tokens
 	if tokens == []:
-		raise RuntimeError("Improper list")
+		raise ParseError("Improper list")
 	if tokens[0] == ')':
 		return (objects.Nil(), tokens[1:])
 	if tokens[0] == '.':
 		(obj, rest) = parse(tokens[1:])
 		if rest[0] != ')':
-			raise RuntimeError("Random stuff after '.'")
+			raise ParseError("Random stuff after '.'")
 		return (obj, rest[1:])		
 	else:
 		(obj, rest) = parse(tokens)
@@ -17,13 +19,13 @@ def parse_list(tokens): # assuming the initial '(' and possibly some elements ha
 		return (objects.Pair(obj, end), rest)
 
 def parse(tokens): # returns (scanned object, rest of tokens)
-	if tokens[0] == 'nil' or tokens[0] == '()':
+	if tokens[0] == '()':
 		return (objects.Nil(), tokens[1:])
 
 	if tokens[0] == '(':
 		return parse_list(tokens[1:])
 	if tokens[0] == ')' or tokens[0] == '.':
-		raise RuntimeError("Parser : ??? at " + tokens)
+		raise ParseError("Parser : ??? at " + str(tokens))
 	if tokens[0] == "'":
 		(obj, rest) = parse(tokens[1:])
 		return (objects.Pair(objects.Symbol("quote"), objects.Pair(obj, objects.Nil())), rest)

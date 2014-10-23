@@ -3,9 +3,9 @@ import env
 import misc
 
 def funcall(fun, args, env):
-#	print("------------")
-#	print(fun, args, env)
-#	env.showEnv()
+	print("------------")
+	print(fun, args, env)
+	env.showEnv()
 	if type(fun) is objects.Symbol:
 		# formes speciales
 		if fun.value == "quote":
@@ -17,6 +17,8 @@ def funcall(fun, args, env):
 			else:
 				if res.value == True:
 					return args.cdr().car().evaluate(env)
+				elif type(args.cdr().cdr()) is objects.Nil:
+					return objects.Nil()
 				else:
 					return args.cdr().cdr().car().evaluate(env)
 		elif fun.value == "begin":
@@ -25,11 +27,16 @@ def funcall(fun, args, env):
 				ops[i].evaluate(env)
 			print(ops[-1])
 			return ops[-1].evaluate(env)
-		elif fun.value == "set!":
+		elif fun.value == "set!" or fun.value == "define":
+			if type(args.cdr()) is objects.Nil():
+				raise RuntimeError(fun.value + " expects two arguments")
 			newVal = args.cdr().car().evaluate(env)
 			if not type(args.car()) is objects.Symbol:
-				raise RuntimeError("set! expects a symbol as its first argument")
-			env.setValue(args.car().value, newVal)
+				raise RuntimeError(fun.value + " expects a symbol as its first argument")
+			if fun.value == "set!":
+				env.setValue(args.car().value, newVal)
+			else:
+				env.addValue(args.car().value, newVal)
 			return newVal
 		elif fun.value == "lambda":
 			return objects.Lambda(env, misc.pairsToList(args.car()), objects.Pair(objects.Symbol("begin"), args.cdr()))

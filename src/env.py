@@ -12,20 +12,15 @@ class Env():
 				return self.parent.getValue(name)
 			else:
 				raise UndefinedError(name)
-	def sv(self, name, value, bottom=True):
+	def setValue(self, name, value):
 		if name in self.bindings:
 			self.bindings[name] = value
-			return True
+		elif self.parent == None:
+			raise UndefinedError(name)
 		else:
-			if self.parent and self.parent.sv(name, value, False):
-				return True
-			elif bottom:
-				self.bindings[name] = value
-				return True
-			else:
-				return False
-	def setValue(self, name, value):
-		self.sv(name, value, True)
+			self.parent.setValue(name, value)
+	def addValue(self, name, value):
+		self.bindings[name] = value
 	def showEnv(self, parent=True):
 		print("Env listing" + (" (with parents)" if parent else ""))
 		for i in self.bindings:

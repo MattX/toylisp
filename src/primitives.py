@@ -89,10 +89,10 @@ def applyP(l):
 		raise PrimitiveError("apply: wrong argument type")
 	return l[0].apply(misc.pairsToList(l[1]))
 
-def evalP(l):
-	if len(l) != 1:
-		raise PrimitiveError("eval: wrong number of arguments")
-	return evaluate(l[0])
+#def evalP(l):
+#	if len(l) != 1:
+#		raise PrimitiveError("eval: wrong number of arguments")
+#	return evaluate.eval(l[0], e)
 
 def atomP(l):
 	if len(l) != 1:
@@ -113,4 +113,19 @@ def gtP(l):
 	if len(l) != 2:
 		raise PrimitiveError(">: wrong number of arguments")
 	return gt(l[0], l[1])
+	
+def printP(l):
+	if len(l) != 1:
+		raise PrimitiveError("print: wrong number of arguments")
+	print(l[0])
+	return objects.Nil()
+
+def inputP(l):
+	if len(l) > 1:
+		raise PrimitiveEroor("input: wrong number of arguments")
+	if len(l) == 1:
+		res = input(l[0].value)
+	else:
+		res = input()
+	return objects.String(res)
 	

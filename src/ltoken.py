@@ -6,8 +6,20 @@ def tokenize(text):
 	parsed = []
 	acc = ""
 	in_str = False
+	in_comment = False
 	for i in range(0, len(text)):
-		if text[i] == '"':
+		if in_str and text[i] != '"':
+			acc = acc + text[i]
+		elif text[i] == ';':
+			in_comment = True
+			if acc != "":
+				parsed.append(acc)
+				acc = ""
+		elif text[i] == '\n' and in_comment:
+			in_comment = False
+		elif in_comment:
+			pass
+		elif text[i] == '"':
 			if not in_str:
 				in_str = True
 				if acc != "":
@@ -17,8 +29,6 @@ def tokenize(text):
 				in_str = False
 				parsed.append('"' + acc + '"')
 				acc = ""
-		elif in_str:
-			acc = acc + text[i]
 		elif partOfSym(text[i]):
 			acc = acc + text[i]
 		elif text[i].isspace():

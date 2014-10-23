@@ -8,7 +8,7 @@ import lparse
 mainEnv = env.Env()
 
 def associate(sym, fun):
-	mainEnv.setValue(sym, objects.Primitive(mainEnv, fun))
+	mainEnv.addValue(sym, objects.Primitive(mainEnv, fun))
 
 def tokEval(tok, env, silent=False):
 	while(tok != []):
@@ -34,6 +34,11 @@ def load(fname):
 		raise RuntimeError("load: " + fname + " is not balanced")
 	tokEval(ltoken.tokenize(code), mainEnv, True)
 
+def loadP(l):
+	if len(l) != 1:
+		raise prim.PrimitiveError("load: wrong number of arguments")
+	load(l[0].value)
+
 associate("+", prim.plusP)
 associate("*", prim.mulP)
 associate("-", prim.subP)
@@ -44,11 +49,15 @@ associate("cdr", prim.cdrP)
 associate("atom", prim.atomP)
 associate("eq", prim.eqP)
 associate("=", prim.equalP)
-associate("eval", prim.evalP)
+#associate("eval", prim.evalP)
 associate("apply", prim.applyP)
+associate("load", loadP)
+associate("print", prim.printP)
+associate("input", prim.inputP)
+mainEnv.addValue("nil", objects.Nil())
 
 def repl():
-	mainEnv.setValue("__cont", objects.Bool(True))
+	mainEnv.addValue("__cont", objects.Bool(True))
 	while mainEnv.getValue("__cont").value == True:
 		command = input(">>> ")
 		while not exprOk(command):

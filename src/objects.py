@@ -90,7 +90,8 @@ class Lambda(Function):
 		if len(self.args) != len(values):
 			raise RuntimeError("Parity incorrect")
 		for i in range(0, len(self.args)):
-			e.setValue(self.args[i].value, values[i])
+			e.addValue(self.args[i].value, values[i])
+		print("Pushed values to", e)
 		return self.body.evaluate(e)
 
 
@@ -104,15 +105,6 @@ class Primitive(Function):
 		return self
 	def apply(self, args):
 		return self.primitive(args)
-
-
-def prettyPrint(obj):
-	def ppList(obj, first=False):
-		if not (type(obj) is Pair):
-			print(obj)
-		else:
-			print("This is a nice pair")
-	ppList(obj, first=True)
 
 
 def tests():
