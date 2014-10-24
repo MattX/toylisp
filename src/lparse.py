@@ -29,6 +29,9 @@ def parse(tokens): # returns (scanned object, rest of tokens)
 	if tokens[0] == "'":
 		(obj, rest) = parse(tokens[1:])
 		return (objects.Pair(objects.Symbol("quote"), objects.Pair(obj, objects.Nil())), rest)
+	if tokens[0] == ",":
+		(obj, rest) = parse(tokens[1:])
+		return (objects.Pair(objects.Symbol("unquote"), objects.Pair(obj, objects.Nil())), rest)
 	
 	if tokens[0] == "#t":
 		return (objects.Bool(True), tokens[1:])

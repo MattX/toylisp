@@ -33,11 +33,22 @@ def band(b, c):
 def catstr(s1, s2):
 	return s1 + s2
 
-def atom(a):
-	return type(a) != objects.Pair
-
 
 # Primitives
+
+def macroP(l):
+	if len(l) != 1:
+		raise PrimitiveError("macro: wrong number of args")
+	f = l[0]
+	if not isinstance(f, objects.Function):
+		raise PrimitiveError("macro: expected " + f + " to be a function")
+	f.macro = True
+	return f
+
+def nilP(l):
+	if len(l) != 1:
+		raise PrimitiveError("nil: wrong number of args")
+	return objects.Bool(type(l[0]) is objects.Nil)
 
 def consP(l):
 	if len(l) != 2:
@@ -97,7 +108,7 @@ def applyP(l):
 def atomP(l):
 	if len(l) != 1:
 		raise PrimitiveError("atom: wrong number of arguments")
-	return objects.Bool(atom(l[0]))
+	return objects.Bool(misc.atom(l[0]))
 
 def mulP(l):
 	if len(l) != 2:
@@ -122,10 +133,15 @@ def printP(l):
 
 def inputP(l):
 	if len(l) > 1:
-		raise PrimitiveEroor("input: wrong number of arguments")
+		raise PrimitiveError("input: wrong number of arguments")
 	if len(l) == 1:
 		res = input(l[0].value)
 	else:
 		res = input()
 	return objects.String(res)
 	
+def gensymP(l):
+	if len(l) != 0:
+		raise PrimitiveError("gensym: wrong number of arguments")
+	return objects.Symbol(misc.gensym())
+

@@ -1,6 +1,6 @@
 def partOfSym(char):
 	return (not char.isspace() and char != "(" and char != ")" and
-                    char != "'")
+                    char != "'" and char != ',')
 
 def tokenize(text):
 	parsed = []

@@ -82,20 +82,14 @@ class Lambda(Function):
 		self.args = args
 		self.body = body
 		self.macro = False
-		self.varargs = varargs
 	def __str__(self):
-		return ("varargs " if self.varargs else "") + ("macro " if self.macro else "") + "lambda function : " + str(list(map(str, self.args))) + " -> " + str(self.body) + " in " + str(self.env)
+		return ("macro " if self.macro else "") + "lambda function : " + str(self.args) + " -> " + str(self.body) + " in " + str(self.env)
 	def evaluate(self, env):
 		return self
 	def apply(self, values):
 		e = env.Env(self.env)
-		if not self.varargs:
-			if len(self.args) != len(values):
-				raise RuntimeError("Parity incorrect")
-			for i in range(0, len(self.args)):
-				e.addValue(self.args[i].value, values[i])
-		else:
-			e.addValue(self.args[0].value, misc.listToPairs(values))
+		argMappings = misc.filterMap(self.args, values)
+		e.addDict(argMappings)
 		return self.body.evaluate(e)
 
 
@@ -109,6 +103,7 @@ class Primitive(Function):
 	def evaluate(self, env):
 		return self
 	def apply(self, values):
+		values = misc.pairsToList(values)
 		return self.primitive(values)
 
 

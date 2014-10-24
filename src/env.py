@@ -21,6 +21,9 @@ class Env():
 			self.parent.setValue(name, value)
 	def addValue(self, name, value):
 		self.bindings[name] = value
+	def addDict(self, d):
+		for key in d:
+			self.addValue(key, d[key])
 	def showEnv(self, parent=True):
 		print("Env listing" + (" (with parents)" if parent else ""))
 		for i in self.bindings:
