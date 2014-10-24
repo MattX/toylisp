@@ -64,7 +64,7 @@ def repl():
 	while mainEnv.getValue("__cont").value == True:
 		command = input(">>> ")
 		while not exprOk(command):
-			command = command + input("... ")
+			command = command + '\n' + input("... ")
 		tokEval(ltoken.tokenize(command), mainEnv, False)
 
 if __name__ == '__main__':

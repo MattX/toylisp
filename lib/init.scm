@@ -22,6 +22,8 @@
 (define (first l) (car l))
 (define (second l) (car (cdr l)))
 (define (third l) (car (car (cdr l))))
+(defrec (nth n l)
+   (if (= n 0) (car l) (nth (- n 1) (cdr l))))
 
 (defrec (map f l)
    (if (isnil l) nil
