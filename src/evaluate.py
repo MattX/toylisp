@@ -50,7 +50,9 @@ def funcall(fun, args, env):
 		
 		#macro
 		elif env.getValue(fun.value).macro:
-			return fun.evaluate(env).apply(args).evaluate(env)
+			r = fun.evaluate(env).apply(args)
+			#print(r)
+			return r.evaluate(env)
 
 
 	#fonction normale

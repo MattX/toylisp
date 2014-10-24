@@ -27,6 +27,6 @@
    (if (isnil l) nil
                  (cons (f (car l)) (map f (cdr l)))))
 
-(defmacro (let (bindings) . body)
-   '((lambda ,(map first bindings) . body) ,(map second bindings)))
+(defmacro (let bindings . body)
+   '((lambda ,(map first bindings) . body) . ,(map second bindings)))
    
