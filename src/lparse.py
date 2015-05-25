@@ -25,7 +25,7 @@ def parse(tokens): # returns (scanned object, rest of tokens)
 	if tokens[0] == '(':
 		return parse_list(tokens[1:])
 	if tokens[0] == ')' or tokens[0] == '.':
-		raise ParseError("Parser : ??? at " + str(tokens))
+		raise ParseError("Parser : unexpected ')' at " + str(tokens))
 	if tokens[0] == "'":
 		(obj, rest) = parse(tokens[1:])
 		return (objects.Pair(objects.Symbol("quote"), objects.Pair(obj, objects.Nil())), rest)
