@@ -77,7 +77,7 @@ class Function(Value):
 		raise NotImplementedError
 
 class Lambda(Function):
-	def __init__(self, env, args, body, varargs = False):
+	def __init__(self, env, args, body):
 		self.env = env
 		self.args = args
 		self.body = body
