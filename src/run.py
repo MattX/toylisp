@@ -4,15 +4,18 @@ import primitives as prim
 import evaluate
 import ltoken
 import lparse
+import macro
 
 mainEnv = env.Env()
+macroEnv = env.Env()
 
 def associate(sym, fun):
 	mainEnv.addValue(sym, objects.Primitive(mainEnv, fun))
 
-def tokEval(tok, env, silent=False):
+def tokEval(tok, env, menv, silent=False):
 	while(tok != []):
 		(obj, tok) = lparse.parse(tok)
+		newobj = macro.macroeval(obj, menv)
 		res = evaluate.eval(obj, env)
 		if not silent:
 			print(res)
@@ -32,7 +35,7 @@ def load(fname):
 		code = infile.read()
 	if not exprOk(code):
 		raise RuntimeError("load: " + fname + " is not balanced")
-	tokEval(ltoken.tokenize(code), mainEnv, True)
+	tokEval(ltoken.tokenize(code), mainEnv, macroEnv, True)
 
 def loadP(l):
 	if len(l) != 1:
@@ -65,7 +68,7 @@ def repl():
 		command = input(">>> ")
 		while not exprOk(command):
 			command = command + '\n' + input("... ")
-		tokEval(ltoken.tokenize(command), mainEnv, False)
+		tokEval(ltoken.tokenize(command), mainEnv, macroEnv, False)
 
 if __name__ == '__main__':
 	repl()
