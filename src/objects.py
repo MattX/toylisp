@@ -2,11 +2,15 @@ import evaluate
 import env
 import misc
 
+class NotAFunctionError(Exception): pass
+
 class Value():
 	def __str__(self):
-		return "Generic value (bug ?)"
+		return "**Generic value (this is a bug)**"
 	def evaluate(self, env):
 		raise NotImplementedError
+	def apply(self, values):
+		raise NotAFunctionError(str(self))
 
 class Nil(Value):
 	def __str__(self):

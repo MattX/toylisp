@@ -5,6 +5,7 @@ import evaluate
 import ltoken
 import lparse
 import macro
+import misc
 
 mainEnv = env.Env()
 macroEnv = env.Env()
@@ -12,13 +13,21 @@ macroEnv = env.Env()
 def associate(sym, fun):
 	mainEnv.addValue(sym, objects.Primitive(mainEnv, fun))
 
-def tokEval(tok, env, menv, silent=False):
+def tokEval(tok, environment, menv, silent=False):
 	while(tok != []):
 		(obj, tok) = lparse.parse(tok)
 		newobj = macro.macroeval(obj, menv)
-		res = evaluate.eval(obj, env)
-		if not silent:
-			print(res)
+		try:
+			res = evaluate.eval(obj, environment)
+		except env.UndefinedError as e:
+			print('* Undefined variable: ' + e.args[0])
+		except objects.NotAFunctionError as e:
+			print('* Not a function: ' + e.args[0])
+		except misc.ExecutionError as e:
+			print('* Error: ' + e.args[0])
+		else:
+			if not silent:
+				print(res)
 
 def exprOk(text):
 	toks = ltoken.tokenize(text)
@@ -34,7 +43,7 @@ def load(fname):
 	with open (fname, "r") as infile:
 		code = infile.read()
 	if not exprOk(code):
-		raise RuntimeError("load: " + fname + " is not balanced")
+		raise misc.ExecutionError("load: " + fname + " is not balanced")
 	tokEval(ltoken.tokenize(code), mainEnv, macroEnv, True)
 
 def loadP(l):

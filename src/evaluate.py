@@ -21,7 +21,7 @@ def funcall(fun, args, env):
 		elif fun.value == "if":
 			res = args.car().evaluate(env)
 			if not type(res) is objects.Bool:
-				raise RuntimeError("Type of " + str(args.car()) + " is not Bool")
+				raise misc.ExecutionError("Type of " + str(args.car()) + " is not Bool")
 			else:
 				if res.value == True:
 					return args.cdr().car().evaluate(env)
@@ -33,13 +33,16 @@ def funcall(fun, args, env):
 			ops = misc.pairsToList(args)
 			for i in range(0, len(ops) - 1):
 				ops[i].evaluate(env)
-			return ops[-1].evaluate(env)
+			if len(ops) == 0:
+				return objects.Nil()
+			else:
+				return ops[-1].evaluate(env)
 		elif fun.value == "set!" or fun.value == "define*":
 			if type(args.cdr()) is objects.Nil():
-				raise RuntimeError(fun.value + " expects two arguments")
+				raise misc.ExecutionError(fun.value + " expects two arguments")
 			newVal = args.cdr().car().evaluate(env)
 			if not type(args.car()) is objects.Symbol:
-				raise RuntimeError(fun.value + " expects a symbol as its first argument")
+				raise misc.ExecutionError(fun.value + " expects a symbol as its first argument")
 			if fun.value == "set!":
 				env.setValue(args.car().value, newVal)
 			else:
