@@ -35,7 +35,7 @@ def filterMap(p1, p2):
 	if type(p1) is o.Symbol:
 		return { p1.value: p2 }
 	elif not type(p1) is type(p2):
-		raise misc.ExecutionError("filterMap: cannot filter " + str(p2) + " against " + str(p1))
+		raise ExecutionError("filterMap: cannot filter " + str(p2) + " against " + str(p1))
 	elif type(p1) is o.Pair:
 		cmap = filterMap(p1.cdr(), p2.cdr())
 		amap = filterMap(p1.car(), p2.car())
@@ -43,7 +43,7 @@ def filterMap(p1, p2):
 	elif type(p1) is o.Nil:
 		return {}
 	else:
-		raise misc.ExecutionError("filterMap: cannot filter against " + str(p1))
+		raise ExecutionError("filterMap: cannot filter against " + str(p1))
 
 def tests():
 	import ltoken as t

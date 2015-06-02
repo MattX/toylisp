@@ -37,7 +37,7 @@ def funcall(fun, args, env):
 				return objects.Nil()
 			else:
 				return ops[-1].evaluate(env)
-		elif fun.value == "set!" or fun.value == "define*":
+		elif fun.value == "set!" or fun.value == "define!":
 			if type(args.cdr()) is objects.Nil():
 				raise misc.ExecutionError(fun.value + " expects two arguments")
 			newVal = args.cdr().car().evaluate(env)

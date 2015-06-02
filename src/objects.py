@@ -23,7 +23,7 @@ class Int(Value):
 	def __init__(self, value=0):
 		self.value = value
 	def __str__(self):
-		return str(self.value)
+		return str(self.value) + ("" if self.value != 42 else "!!")
 	def evaluate(self, env):
 		return self
 

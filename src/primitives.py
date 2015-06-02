@@ -1,7 +1,16 @@
 import objects
 import misc
+import env
 
 class PrimitiveError(Exception): pass
+
+def associate(sym, fun, environment):
+	environment.addValue(sym, objects.Primitive(environment, fun))
+
+def associatePrimitives(primitives, environment):
+	for sym, fun in primitives.items():
+		associate(sym, fun, environment)
+
 
 def add(i, j):
 	return objects.Int(i.value + j.value)

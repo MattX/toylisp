@@ -10,8 +10,6 @@ import misc
 mainEnv = env.Env()
 macroEnv = env.Env()
 
-def associate(sym, fun):
-	mainEnv.addValue(sym, objects.Primitive(mainEnv, fun))
 
 def tokEval(tok, environment, menv, silent=False):
 	while(tok != []):
@@ -51,27 +49,21 @@ def loadP(l):
 		raise prim.PrimitiveError("load: wrong number of arguments")
 	load(l[0].value)
 
-associate("+", prim.plusP)
-associate("*", prim.mulP)
-associate("-", prim.subP)
-associate(">", prim.gtP)
-associate("cons", prim.consP)
-associate("car", prim.carP)
-associate("cdr", prim.cdrP)
-associate("atom", prim.atomP)
-associate("eq", prim.eqP)
-associate("=", prim.equalP)
-#associate("eval", prim.evalP)
-associate("apply", prim.applyP)
-associate("load", loadP)
-associate("print", prim.printP)
-associate("input", prim.inputP)
-associate("macro", prim.macroP)
-associate("gensym", prim.gensymP)
-associate("isnil", prim.nilP)
-mainEnv.addValue("nil", objects.Nil())
+
+def prepareEnv(environment):
+	primitives = { "+": prim.plusP, "*": prim.mulP,
+		       "-": prim.mulP, "-": prim.subP,
+		       ">": prim.gtP, "eq": prim.eqP, "=": prim.equalP, "nil?": prim.nilP, "atom?": prim.atomP,
+		       "cons": prim.consP, "car": prim.carP, "cdr": prim.cdrP,
+		       "apply": prim.applyP,
+		       "load": loadP,
+		       "print": prim.printP, "input": prim.inputP,
+		       "macro": prim.macroP, "gensym": prim.gensymP }
+	prim.associatePrimitives(primitives, environment)
+	environment.addValue("nil", objects.Nil())
 
 def repl():
+	prepareEnv(mainEnv)
 	mainEnv.addValue("__cont", objects.Bool(True))
 	while mainEnv.getValue("__cont").value == True:
 		command = input(">>> ")

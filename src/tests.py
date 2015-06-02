@@ -140,8 +140,8 @@ class QuoteForm(unittest.TestCase):
 
 class ComplexLambda(unittest.TestCase):
 	def test_withdraw(self):
-		evString('(define mw (lambda (init) ((lambda (bal) (lambda (n) (set! bal (- bal n)))) init)))')
-		evString('(define W1 (mw 50)) (define W2 (mw 70))')
+		evString('(define! mw (lambda (init) ((lambda (bal) (lambda (n) (set! bal (- bal n)))) init)))')
+		evString('(define! W1 (mw 50)) (define! W2 (mw 70))')
 		self.assertTrue(equivalent(evString('(W1 10)'), run.objects.Int(40)))
 		self.assertTrue(equivalent(evString('(W2 0)'), run.objects.Int(70)))
 
