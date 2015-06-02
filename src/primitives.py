@@ -39,8 +39,14 @@ def bor(b, c):
 def band(b, c):
 	return objects.Bool(b.value and c.value)
 
-def catstr(s1, s2):
-	return s1 + s2
+def catstr(l):
+	if l == []:
+		return objects.String('')
+	else:
+		if not type(l[0]) is objects.String:
+			raise PrimitiveError("cat: expected" + l[0] + "to be a string")
+		else:
+			return objects.String(head(l).value + catstr(l[1:]))
 
 
 # Primitives
@@ -137,7 +143,7 @@ def gtP(l):
 def printP(l):
 	if len(l) != 1:
 		raise PrimitiveError("print: wrong number of arguments")
-	print(l[0])
+	print(l[0].value)
 	return objects.Nil()
 
 def inputP(l):
@@ -148,6 +154,14 @@ def inputP(l):
 	else:
 		res = input()
 	return objects.String(res)
+
+def catP(l):
+	return catstr(l)
+	
+def srefP(l):
+	if len(l) != 2:
+		raise PrimitiveError("sref: wrong number of arguments")
+	return String((l[0].value)[l[1]])
 	
 def gensymP(l):
 	if len(l) != 0:

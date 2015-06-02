@@ -14,7 +14,7 @@ macroEnv = env.Env()
 def tokEval(tok, environment, menv, silent=False):
 	while(tok != []):
 		(obj, tok) = lparse.parse(tok)
-		newobj = macro.macroeval(obj, menv)
+#		newobj = evaluate.macroeval(obj, menv)
 		try:
 			res = evaluate.eval(obj, environment)
 		except env.UndefinedError as e:

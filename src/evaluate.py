@@ -2,13 +2,15 @@ import objects
 import env
 import misc
 
-def quote(expr, env):
+def quote(expr, env, depth = 1):
 	if misc.atom(expr):
 		return expr
-	elif type(expr.car()) is objects.Symbol and expr.car().value == "unquote":
+	elif type(expr.car()) is objects.Symbol and expr.car().value == "unquote" and depth == 1:
 		return expr.cdr().car().evaluate(env)
+	elif type(expr.car()) is objects.Symbol and expr.car().value == "quote":
+		return objects.Pair(quote(expr.car(), env, depth+1), quote(expr.cdr(), env, depth+1))
 	else:
-		return objects.Pair(quote(expr.car(), env), quote(expr.cdr(), env))
+		return objects.Pair(quote(expr.car(), env, depth), quote(expr.cdr(), env, depth))
 
 def funcall(fun, args, env):
 #	print("------------")
