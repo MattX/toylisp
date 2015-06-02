@@ -12,12 +12,6 @@
 	(if (atom name-args) '(define* ,name-args . ,body)
 	                     '(define* ,(car name-args) (lambda ,(cdr name-args) . ,body))))
 
-(defmacro (defrec (name . args) . body)
-   '(define* ,name
-       ((lambda (F) (F F))
-        (lambda (F)
-           (lambda ,args
-              ((lambda (,name) . ,body) (F F)))))))
 
 (define (first l) (car l))
 (define (second l) (car (cdr l)))
@@ -25,7 +19,7 @@
 (defrec (nth n l)
    (if (= n 0) (car l) (nth (- n 1) (cdr l))))
 
-(defrec (map f l)
+(define (map f l)
    (if (isnil l) nil
                  (cons (f (car l)) (map f (cdr l)))))
 

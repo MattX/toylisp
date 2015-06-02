@@ -4,7 +4,6 @@ import primitives as prim
 import evaluate
 import ltoken
 import lparse
-import macro
 import misc
 
 mainEnv = env.Env()
@@ -14,7 +13,6 @@ macroEnv = env.Env()
 def tokEval(tok, environment, menv, silent=False):
 	while(tok != []):
 		(obj, tok) = lparse.parse(tok)
-		newobj = macro.macroeval(obj, menv)
 		try:
 			res = evaluate.eval(obj, environment)
 		except env.UndefinedError as e:
