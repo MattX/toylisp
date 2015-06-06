@@ -1,6 +1,7 @@
 import evaluate
 import env
 import misc
+import rstack
 
 class NotAFunctionError(Exception): pass
 
@@ -70,7 +71,7 @@ class Pair(Value):
 		return "(" + self.insidePrint()
 
 	def evaluate(self, env):
-		return evaluate.funcall(self.car(), self.cdr(), env)
+		return rstack.FuncallReturn(env, self.car(), self.cdr())
 	def car(self):
 		return self.vcar
 	def cdr(self):
@@ -94,7 +95,8 @@ class Lambda(Function):
 		e = env.Env(self.env)
 		argMappings = misc.filterMap(self.args, values)
 		e.addDict(argMappings)
-		return self.body.evaluate(e)
+#		e.showEnv()
+		return rstack.EvalReturn(e, self.body)
 
 
 class Primitive(Function):

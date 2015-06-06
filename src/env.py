@@ -15,7 +15,7 @@ class Env():
 	def setValue(self, name, value):
 		if name in self.bindings:
 			self.bindings[name] = value
-		elif self.parent == None:
+		elif self.parent is None:
 			raise UndefinedError(name)
 		else:
 			self.parent.setValue(name, value)

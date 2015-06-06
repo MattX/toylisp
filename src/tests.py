@@ -139,11 +139,22 @@ class QuoteForm(unittest.TestCase):
 		i = run.objects.Int(42)
 
 class ComplexLambda(unittest.TestCase):
+	def setUp(self):
+		run.prepareEnv(run.mainEnv)
+
 	def test_withdraw(self):
 		evString('(define! mw (lambda (init) ((lambda (bal) (lambda (n) (set! bal (- bal n)))) init)))')
 		evString('(define! W1 (mw 50)) (define! W2 (mw 70))')
 		self.assertTrue(equivalent(evString('(W1 10)'), run.objects.Int(40)))
 		self.assertTrue(equivalent(evString('(W2 0)'), run.objects.Int(70)))
+
+class RetStack(unittest.TestCase):
+	def setUp(self):
+		pass
+
+	def make_stack(self):
+		st = run.evaluate.rstack.ReturnStack()
+
 
 
 if __name__ == '__main__':

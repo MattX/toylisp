@@ -56,7 +56,7 @@ def macroP(l):
 		raise PrimitiveError("macro: wrong number of args")
 	f = l[0]
 	if not isinstance(f, objects.Function):
-		raise PrimitiveError("macro: expected " + f + " to be a function")
+		raise PrimitiveError("macro: expected " + str(f) + " to be a function")
 	f.macro = True
 	return f
 
@@ -141,9 +141,8 @@ def gtP(l):
 	return gt(l[0], l[1])
 	
 def printP(l):
-	if len(l) != 1:
-		raise PrimitiveError("print: wrong number of arguments")
-	print(l[0].value)
+	for item in l:
+		print(item.value)
 	return objects.Nil()
 
 def inputP(l):
@@ -161,7 +160,7 @@ def catP(l):
 def srefP(l):
 	if len(l) != 2:
 		raise PrimitiveError("sref: wrong number of arguments")
-	return String((l[0].value)[l[1]])
+	return String((l[0].value)[l[1].value])
 	
 def gensymP(l):
 	if len(l) != 0:

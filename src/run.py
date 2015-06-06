@@ -49,13 +49,12 @@ def loadP(l):
 
 
 def prepareEnv(environment):
-	primitives = { "+": prim.plusP, "*": prim.mulP,
-		       "-": prim.mulP, "-": prim.subP,
+	primitives = { "+": prim.plusP, "*": prim.mulP, "-": prim.subP,
 		       ">": prim.gtP, "eq": prim.eqP, "=": prim.equalP, "nil?": prim.nilP, "atom?": prim.atomP,
 		       "cons": prim.consP, "car": prim.carP, "cdr": prim.cdrP,
 		       "apply": prim.applyP,
 		       "load": loadP,
-		       "print": prim.printP, "input": prim.inputP,
+		       "display": prim.printP, "input": prim.inputP,
 		       "macro": prim.macroP, "gensym": prim.gensymP }
 	prim.associatePrimitives(primitives, environment)
 	environment.addValue("nil", objects.Nil())
